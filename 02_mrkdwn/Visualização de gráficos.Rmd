@@ -1,0 +1,44 @@
+---
+title: "Visualização de gráficos"
+author: "Julia Pierry"
+date: "`r Sys.Date()`"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+---
+
+```{r include=FALSE}
+source("../01_scripts/graf_tipo_dado.R")
+source("../01_scripts/graf_esp.R")
+source("../01_scripts/graf_met.R")
+
+
+library(readxl)
+library(plotly)
+
+
+raw_data <- read_xlsx(file.path("../00_data/planilha final.xlsx"))
+```
+
+
+Ano e tipo de dado
+=====================================
+```{r}
+g_tipo_dado <- graf_tipo_dado(raw_data)
+ggplotly(g_tipo_dado)
+```
+
+Ano e espécie
+=====================================
+```{r}
+g_esp <- graf_esp(raw_data)
+ggplotly(g_esp)
+```
+
+Ano e metodologia
+=====================================
+```{r}
+g_met <- graf_met(raw_data)
+ggplotly(g_met)
+```
+
