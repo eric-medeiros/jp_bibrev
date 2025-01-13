@@ -10,14 +10,15 @@ graf_tipo_dado <- function(raw_data) {
     separate_rows(tipo_de_dado, sep = "; ") %>%
     group_by(ano, tipo_de_dado) %>%
     summarise(n_publicacoes = n(), .groups = "drop") %>%
-    complete(ano, tipo_de_dado, fill = list(n_publicacoes = 0)) %>%  # Preenche anos e tipos ausentes com zero
+    complete(ano = full_seq(ano, 1), tipo_de_dado, fill = list(n_publicacoes = 0)) %>%  # Preenche anos e tipos ausentes com zero
     arrange(ano)
   
   # Calcular o total geral por ano
   totals <- processed_data %>%
     group_by(ano) %>%
     summarise(n_publicacoes = sum(n_publicacoes), .groups = "drop") %>%
-    mutate(tipo_de_dado = "Total Geral")
+    mutate(tipo_de_dado = "Total Geral") %>%
+    complete(ano = full_seq(ano, 1), fill = list(n_publicacoes = 0))
   
   # Ajustar a ordem da legenda e combinar dados com total geral
   final_data <- bind_rows(processed_data, totals) %>%
@@ -35,18 +36,18 @@ graf_tipo_dado <- function(raw_data) {
     geom_line(size = final_data$size) +
     scale_color_manual(
       values = c(
-        "registro" = "gray20",
+        "amostra genética" = "#e7298a",
+        "artigos" = "#a6761d",
+        "audios" = "#7570b3",
+        "dados sateletais" = "#66a61e",
         "fotos" = "#1b9e77",
-        "vídeos aéreos" = "#d95f02",
-        "faixas acústicas" = "#7570b3",
-        "amostras genéticas" = "#e7298a",
-        "dados sociais" = "#66a61e",
-        "outros" = "#e6ab02",
-        "drone" = "#a6761d",
+        "material biológico" = "#e6ab02",
+        "registro" = "gray20",
+        "videos" = "#d95f02",
         "Total Geral" = "black"
       )
     ) +  # Cores nomeadas para cada classe
-    scale_y_continuous(limits = c(0, 4)) +  # Eixo Y começa do zero e tem apenas números inteiros
+    scale_y_continuous(limits = c(0, 35)) +  # Eixo Y começa do zero e tem apenas números inteiros
     labs(
       title = "Publicações por Ano por Tipo de Dado Coletado",
       x = "Ano",
