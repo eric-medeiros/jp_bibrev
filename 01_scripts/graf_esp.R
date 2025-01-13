@@ -8,17 +8,18 @@ graf_esp <- function(raw_data) {
   
   # Preencher anos e tipos de dado ausentes com zero
   processed_data <- raw_data %>%
-    separate_rows(especie, sep = ";") %>%
+    separate_rows(especie, sep = "; ") %>%
     group_by(ano, especie) %>%
     summarise(n_publicacoes = n(), .groups = "drop") %>%
-    complete(ano, especie, fill = list(n_publicacoes = 0)) %>%  # Preenche anos e tipos ausentes com zero
+    complete(ano = full_seq(ano, 1), especie, fill = list(n_publicacoes = 0)) %>%  # Preenche anos e tipos ausentes com zero
     arrange(ano)
   
   # Calcular o total geral por ano
   totals <- processed_data %>%
     group_by(ano) %>%
     summarise(n_publicacoes = sum(n_publicacoes), .groups = "drop") %>%
-    mutate(especie = "Total Geral")
+    mutate(especie = "Total Geral") %>%
+    complete(ano = full_seq(ano, 1), fill = list(n_publicacoes = 0))
   
   # Ajustar a ordem da legenda e combinar dados com total geral
   final_data <- bind_rows(processed_data, totals) %>%
@@ -32,8 +33,8 @@ graf_esp <- function(raw_data) {
   graf <-  
     ggplot(final_data, aes(x = ano, y = n_publicacoes, color = especie, group = especie)) +
     geom_line(size = 0.3) +
-    geom_line(data = subset(final_data, especie == "Total Geral"), color = "black", size = 0.8)+
-    scale_y_continuous(limits = c(0, 4)) +  # Eixo Y começa do zero e tem apenas números inteiros
+    geom_line(data = subset(final_data, especie == "Total Geral"), color = "black", size = 0.8) +
+    scale_y_continuous(limits = c(0, 30)) +  # Eixo Y começa do zero e tem apenas números inteiros
     labs(
       title = "Publicações por Ano por Espécie Estudada",
       x = "Ano",
