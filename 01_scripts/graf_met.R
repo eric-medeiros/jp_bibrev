@@ -11,15 +11,16 @@ graf_met <- function(raw_data) {
     separate_rows(metodologia, sep = "; ") %>%
     group_by(ano, metodologia) %>%
     summarise(n_publicacoes = n(), .groups = "drop") %>%
-    complete(ano, metodologia, fill = list(n_publicacoes = 0)) %>%  # Preenche anos e tipos ausentes com zero
+    complete(ano = full_seq(ano, 1), metodologia, fill = list(n_publicacoes = 0)) %>%  # Preenche anos e tipos ausentes com zero
     arrange(ano)
   
   # Calcular o total geral por ano
   totals <- processed_data %>%
     group_by(ano) %>%
     summarise(n_publicacoes = sum(n_publicacoes), .groups = "drop") %>%
-    mutate(metodologia = "Total Geral")
-  
+    mutate(metodologia = "Total Geral") %>%
+    complete(ano = full_seq(ano, 1), fill = list(n_publicacoes = 0))
+
   # Ajustar a ordem da legenda e combinar dados com total geral
   final_data <- bind_rows(processed_data, totals) %>%
     mutate(
@@ -33,7 +34,7 @@ graf_met <- function(raw_data) {
     ggplot(final_data, aes(x = ano, y = n_publicacoes, color = metodologia, group = metodologia)) +
     geom_line(linewidth = 0.3) +
     geom_line(data = subset(final_data, metodologia == "Total Geral"), color = "black", linewidth = 0.8)+
-    scale_y_continuous(limits = c(0, 4)) +  # Eixo Y começa do zero e tem apenas números inteiros
+    scale_y_continuous(limits = c(0, 35)) +  # Eixo Y começa do zero e tem apenas números inteiros
     labs(
       title = "Publicações por Ano por Metodologia Adotada",
       x = "Ano",
