@@ -11,6 +11,7 @@ output:
 source("../01_scripts/graf_tipo_dado.R")
 source("../01_scripts/graf_esp.R")
 source("../01_scripts/graf_met.R")
+source("../01_scripts/graf_pais.R")
 
 
 library(readxl)
@@ -42,3 +43,9 @@ g_met <- graf_met(raw_data)
 ggplotly(g_met)
 ```
 
+Ano e país
+=====================================
+```{r}
+g_pais <- graf_pais(raw_data)
+ggplotly(g_pais)
+```
