@@ -8,26 +8,48 @@ output:
 ---
 
 ```{r include=FALSE}
+source("../01_scripts/graf_met.R")
+source("../01_scripts/graf_gen.R")
+source("../01_scripts/graf_reg.R")
+
 source("../01_scripts/graf_tipo_dado.R")
 source("../01_scripts/graf_esp.R")
-source("../01_scripts/graf_met.R")
 source("../01_scripts/graf_pais.R")
 
 
 library(readxl)
 library(plotly)
+library(DT)
 
-
-raw_data <- read_xlsx(file.path("../00_data/planilha final.xlsx"))
+raw_data <- list(
+  base = read_xlsx(file.path("../00_data/planilha final.xlsx"), sheet = "Dados estado da arte"),
+  pais_regiao = read_xlsx(file.path("../00_data/planilha final.xlsx"), sheet = "pais_regiao")
+)
 ```
 
-
-Ano e tipo de dado
+Ano e metodologia!!
 =====================================
 ```{r}
-g_tipo_dado <- graf_tipo_dado(raw_data)
-ggplotly(g_tipo_dado)
+g_met <- graf_met(raw_data)
+ggplotly(g_met$grafico)
 ```
+
+Ano e gênero!!
+=====================================
+```{r}
+g_gen <- graf_gen(raw_data)
+ggplotly(g_gen)
+```
+
+Ano e região!!
+=====================================
+```{r}
+g_reg <- graf_reg(raw_data)
+ggplotly(g_reg)
+```
+
+
+
 
 Ano e espécie
 =====================================
@@ -36,11 +58,11 @@ g_esp <- graf_esp(raw_data)
 ggplotly(g_esp)
 ```
 
-Ano e metodologia
+Ano e tipo de dado
 =====================================
 ```{r}
-g_met <- graf_met(raw_data)
-ggplotly(g_met)
+g_tipo_dado <- graf_tipo_dado(raw_data)
+ggplotly(g_tipo_dado)
 ```
 
 Ano e país
