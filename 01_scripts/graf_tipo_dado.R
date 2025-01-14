@@ -6,7 +6,7 @@ graf_tipo_dado <- function(raw_data) {
   library(tidyr)
   
   # Preencher anos e tipos de dado ausentes com zero
-  processed_data <- raw_data %>%
+  processed_data <- raw_data$base %>%
     separate_rows(tipo_de_dado, sep = "; ") %>%
     group_by(ano, tipo_de_dado) %>%
     summarise(n_publicacoes = n(), .groups = "drop") %>%
