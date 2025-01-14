@@ -7,7 +7,7 @@ graf_esp <- function(raw_data) {
   library(scales)
   
   # Preencher anos e tipos de dado ausentes com zero
-  processed_data <- raw_data %>%
+  processed_data <- raw_data$base %>%
     separate_rows(especie, sep = "; ") %>%
     group_by(ano, especie) %>%
     summarise(n_publicacoes = n(), .groups = "drop") %>%
